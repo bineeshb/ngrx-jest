@@ -3,9 +3,13 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
 
+import { environment } from 'env/environment';
 import { APIErrorInterceptor, LoaderInterceptor } from 'app/interceptors';
 import { ToastModule } from './shared/components/toast/toast.module';
+import { metaReducers, reducers } from './reducers';
+import { LoginModule } from './modules/login/login.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -18,8 +22,10 @@ import { AppComponent } from './app.component';
     HttpClientModule,
     AppRoutingModule,
     ToastModule,
-    // StoreModule.forRoot(),
-    // StoreDevtoolsModule({ max: 25,  })
+    LoginModule.forRoot(),
+    StoreModule.forRoot(reducers, { metaReducers }),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    EffectsModule.forRoot([])
 ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },

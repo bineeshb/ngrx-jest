@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { finalize, take } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { finalize, take, tap } from 'rxjs';
 
+import { AppState } from 'app/reducers';
 import { AuthService } from 'app/services';
+import { authActions } from './auth.actions';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +21,8 @@ export class LoginComponent {
   constructor(
     private readonly authService: AuthService,
     fb: FormBuilder,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly store: Store<AppState>
   ) {
     this.loginForm = fb.group({
       username: ['', Validators.required],
@@ -35,6 +39,9 @@ export class LoginComponent {
         finalize(() => {
           this.loginForm.enable();
           this.fetching = false;
+        }),
+        tap(user => {
+          this.store.dispatch(authActions.login({ user }));
         }),
         take(1)
       )
