@@ -26,10 +26,10 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const savedUser = localStorage.getItem('user');
+    const savedUser: LoggedInUser = JSON.parse(localStorage.getItem('user') ?? '{}');
 
-    if (savedUser) {
-      this.store.dispatch(authActions.login({ user: JSON.parse(savedUser) }));
+    if (savedUser?.firstName) {
+      this.store.dispatch(authActions.login({ user: savedUser }));
     }
 
     this.loggedInUser$ = this.store.select(loggedInUser);

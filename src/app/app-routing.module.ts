@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from 'app/services';
+import { PostsResolver } from './modules/posts/posts.resolver';
 
 const routes: Routes = [{
   path: 'login',
@@ -31,7 +32,10 @@ const routes: Routes = [{
 {
   path: '',
   loadChildren: () => import('app/modules/posts/posts.module').then(m => m.PostsModule),
-  title: 'Posts'
+  title: 'Posts',
+  resolve: {
+    postsList: PostsResolver
+  }
 },
 {
   path: '**', redirectTo: '', pathMatch: 'full'
